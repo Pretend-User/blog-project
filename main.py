@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, flash, abort
+from flask import Flask, render_template, redirect, url_for, flash, abort, request
 from flask_bootstrap import Bootstrap
 from flask_ckeditor import CKEditor
 from datetime import date
@@ -9,6 +9,12 @@ from flask_login import UserMixin, login_user, LoginManager, login_required, cur
 from forms import CreatePostForm, CreateUserForm, LogIn, Comment
 from flask_gravatar import Gravatar
 from functools import wraps
+from smtplib import SMTP
+import os
+from dotenv import load_dotenv
+
+
+load_dotenv("C:\Testing\Sensitive Data\.env")
 
 
 def admin_only(f):
@@ -20,8 +26,12 @@ def admin_only(f):
     return decorated_function
 
 
+EMAIL = os.getenv("EMAIL")
+PASSWORD = os.getenv("PASSWORD")
+
+
 app = Flask(__name__)
-app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
+app.config['SECRET_KEY'] = os.getenv("APP_SEC_KEY")
 ckeditor = CKEditor(app)
 Bootstrap(app)
 
@@ -161,9 +171,26 @@ def about():
     return render_template("about.html")
 
 
-@app.route("/contact")
+@app.route('/contact', methods=['POST', 'GET'])
 def contact():
-    return render_template("contact.html")
+    if request.method == "POST":
+        name = request.form['text']
+        email = request.form['email']
+        phone = request.form['phone']
+        msg = request.form['msg']
+        with SMTP('smtp.gmail.com') as connection:
+            connection.starttls()
+            connection.login(user=EMAIL, password=PASSWORD)
+            connection.sendmail(from_addr=EMAIL,
+                                to_addrs=EMAIL,
+                                msg=f"Subject:Client Contact\n\n"
+                                    f"Name: {name}\n"
+                                    f"Email: {email}\n"
+                                    f"Phone: {phone}\n"
+                                    f"Message: {msg}"
+                                )
+        return render_template("contact.html", msg_sent=True)
+    return render_template("contact.html", msg_sent=False)
 
 
 @app.route("/new-post", methods=["POST", "GET"])
