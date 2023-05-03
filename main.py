@@ -14,7 +14,7 @@ import os
 from dotenv import load_dotenv
 
 
-load_dotenv("C:\Testing\Sensitive Data\.env")
+load_dotenv(".env")
 
 
 def admin_only(f):
