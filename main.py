@@ -11,10 +11,6 @@ from flask_gravatar import Gravatar
 from functools import wraps
 from smtplib import SMTP
 import os
-from dotenv import load_dotenv
-
-
-load_dotenv(".env")
 
 
 def admin_only(f):
@@ -26,12 +22,12 @@ def admin_only(f):
     return decorated_function
 
 
-EMAIL = os.getenv("EMAIL")
-PASSWORD = os.getenv("PASSWORD")
+EMAIL = os.environ.get("EMAIL")
+PASSWORD = os.environ.get("PASSWORD")
 
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.getenv("APP_SEC_KEY")
+app.config['SECRET_KEY'] = os.environ.get("APP_SEC_KEY")
 ckeditor = CKEditor(app)
 Bootstrap(app)
 
