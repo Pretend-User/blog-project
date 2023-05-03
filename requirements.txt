@@ -3,7 +3,7 @@ dotenv
 certifi
 chardet
 click
-dominate
+python-dominate
 Flask
 Flask-Bootstrap
 Flask-CKEditor
