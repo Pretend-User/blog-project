@@ -1,9 +1,9 @@
 gunicorn
-dotenv
+python-dotenv
 certifi
 chardet
 click
-python-dominate
+dominate
 Flask
 Flask-Bootstrap
 Flask-CKEditor
